@@ -15,3 +15,14 @@ Some of the useful commands are:
 * `eb clone`, to clone the environment (useful for playing with blue/green deployment);
 * `eb swap <source> --destination_name <clone>`, to swap the URLs and perform the blue/green deployment;
 * `eb terminate <environment_name>`, to terminate the EB environment.
+
+
+## Docker image
+
+Deployment of a containerized app.
+
+* create the `docker/Dockerfile`;
+* you need to tell EB that you want to deploy Docker images, with the command `eb platform select` and selecting docker;
+* build the image with `docker build --tag study-sync:1.0 -f docker/Dockerfile .` (from the parent directory);
+* you can run locally the image with `docker run --env PORT=8080 --publish 8080:8080 study-sync:1.0`
+* to access it, you need to get the ip address of the EC2 instance `curl -s http://169.254.169.254/latest/meta-data/public-ipv4`
