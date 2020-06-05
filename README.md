@@ -16,7 +16,6 @@ Some of the useful commands are:
 * `eb swap <source> --destination_name <clone>`, to swap the URLs and perform the blue/green deployment;
 * `eb terminate <environment_name>`, to terminate the EB environment.
 
-
 ## Docker image
 
 Deployment of a containerized app.
@@ -26,3 +25,18 @@ Deployment of a containerized app.
 * build the image with `docker build --tag study-sync:1.0 -f docker/Dockerfile .` (from the parent directory);
 * you can run locally the image with `docker run --env PORT=8080 --publish 8080:8080 study-sync:1.0`
 * to access it, you need to get the ip address of the EC2 instance `curl -s http://169.254.169.254/latest/meta-data/public-ipv4`
+
+## Docker image on Elastic Container Registry (ECR)
+
+You can as well push a docker image to ECR, with the code inside, and pull it when deploying.
+You will need to have a Dockerrun.aws.json file.
+
+Here the steps to follow:
+
+* `docker build -t study-sync .`
+* `aws ecr get-login-password | docker login --username AWS --password-stdin <account_number>.dkr.ecr.us-east-1.amazonaws.com`
+* `docker tag <docker image> <account_number>.dkr.ecr.us-east-1.amazonaws.com/study-sync`
+* create a `study-sync` repo in ECR
+* `docker push <account_number>.dkr.ecr.us-east-1.amazonaws.com/study-sync`
+* create a file `Dockerrun.aws.json` and add the `AmazonEC2ContainerRegistryReadOnly` policy to the `aws-elasticbeanstalk-ec2-role`
+* deploy the app with the EB commands
